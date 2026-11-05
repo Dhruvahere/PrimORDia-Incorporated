@@ -4,7 +4,7 @@ PrimORDia GmbH is a short, terminal-driven bioinformatics mystery set in 1992. I
 
 Built with FastAPI, Biopython `PairswiseAlign`), and ViennaRNA `RNA.fold`), presented inside an early-1990s SGI/IRIX-inspired workstation interface.
 
----
+
 
 # Quick Start
 
@@ -32,7 +32,7 @@ pip install fastapi uvicorn biopython viennarna
 
 Visit [[http://127.0.0.1:8000](http://127.0.0.1:8000)](http://127.0.0.1:8000](http://127.0.0.1:8000)) in your browser.
 
----
+
 
 #Contractor Terminal Commands
 
