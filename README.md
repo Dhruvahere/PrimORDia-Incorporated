@@ -6,9 +6,9 @@ Built with FastAPI, Biopython `PairswiseAlign`), and ViennaRNA `RNA.fold`), pres
 
 ---
 
-## Quick Start
+# Quick Start
 
-### 1. Create a virtual environment and install dependencies
+# 1. Create a virtual environment and install dependencies
 
 ```bash
 
@@ -20,7 +20,7 @@ pip install fastapi uvicorn biopython viennarna
 
 ```
 
-### 2. Start the workstation server
+# 2. Start the workstation server
 
 ```bash
 
@@ -28,13 +28,13 @@ pip install fastapi uvicorn biopython viennarna
 
 ```
 
-### 3. Open the workstation
+# 3. Open the workstation
 
 Visit [[http://127.0.0.1:8000](http://127.0.0.1:8000)](http://127.0.0.1:8000](http://127.0.0.1:8000)) in your browser.
 
 ---
 
-## Contractor Terminal Commands
+#Contractor Terminal Commands
 
 | Command | Description |
 
