@@ -1,8 +1,8 @@
-/* static/style.css — 1992 SGI 4Dwm / Motif aesthetic */
+
 * { box-sizing: border-box; border-radius: 0 !important; }
 body {
   margin: 0;
-  background: #536678; /* Classic IRIX desktop slate */
+  background: #536678;
   font-family: "Courier New", Courier, monospace;
   color: #111;
   height: 100vh;
