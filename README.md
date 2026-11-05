@@ -1,6 +1,6 @@
 # PrimORDia GmbH (1992 Research Workstation)
 
-PrimORDia GmbH is a short, terminal-driven bioinformatics mystery set in 1992. It is a bioinformatics puzzle taking real gene fragments from birds and reptiles (Gallus gallus, Taeniopygia guttata, and Alligator mississippiensis) and using them to repair PrimORDia's prized synthetic genome for their expensive "pet lizard" `Specimen PR-017`). Rumor has it that PrimORDia's lizard is not exactly of this time—and it even has feathers.
+PrimORDia GmbH is a short, terminal-driven bioinformatics mystery set in 1992. It is a bioinformatics puzzle taking real gene fragments from birds and reptiles (Gallus gallus, Taeniopygia guttata, and Alligator mississippiensis) and using them to repair PrimORDia's prized synthetic genome for their expensive "pet lizard" `Specimen PR-017`). Rumor has it that PrimORDia's lizard is not exactly of this time... and the lizard has feathers.
 
 Built with FastAPI, Biopython `PairswiseAlign`), and ViennaRNA `RNA.fold`), presented inside an early-1990s SGI/IRIX-inspired workstation interface.
 
