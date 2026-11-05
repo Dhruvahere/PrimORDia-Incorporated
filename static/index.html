@@ -1,0 +1,96 @@
+<!-- static/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PrimORDia Research Workstation (IRIX 4.0.5)</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="workstation">
+    <!-- Top Motif Menu Bar -->
+    <div class="menubar">
+      <span class="brand">PrimORDia Research Workstation</span>
+      <span class="menu-item" onclick="sendCmd('inspect zeta')">Workspace</span>
+      <span class="menu-item" onclick="sendCmd('read WO-017')">Files</span>
+      <span class="menu-item" onclick="sendCmd('validate')">Analysis</span>
+      <span class="menu-item" onclick="sendCmd('help')">Help</span>
+    </div>
+
+    <!-- Main Desktop Grid -->
+    <div class="desktop">
+      <!-- Left: Contractor Terminal -->
+      <div class="sgi-window terminal-win">
+        <div class="win-titlebar">Contractor Terminal — ttyq0</div>
+        <div class="win-body terminal-interior">
+          <div id="term-output">PrimORDia S.A. / External Research Access (1992)
+Specimen: PR-017 | Reference taxon: V. mongoliensis | Assigned region: ZETA
+Type `help` or `read WO-017` to begin.
+</div>
+          <div class="prompt-line">
+            <span>contractor% </span>
+            <input id="cmd-input" type="text" autofocus autocomplete="off" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Supporting Research Windows -->
+      <div class="side-panels">
+        <div class="sgi-window">
+          <div class="win-titlebar">Sequence Viewer [Fragment ZETA]</div>
+          <pre id="seq-viewer" class="win-body pane-dark">Run `inspect zeta` to load sequence.</pre>
+        </div>
+
+        <div class="sgi-window">
+          <div class="win-titlebar">Analysis Results (Biopython / ViennaRNA)</div>
+          <pre id="analysis-viewer" class="win-body pane-dark">No alignments or folds computed yet.</pre>
+        </div>
+
+        <div class="sgi-window">
+          <div class="win-titlebar">Company Records</div>
+          <pre id="record-viewer" class="win-body pane-light">Select a file with `read WO-017`, `read VET-017`, `read MEMO-92`, or `read PREV-NOTE`.</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById("cmd-input");
+    const termOut = document.getElementById("term-output");
+    const seqViewer = document.getElementById("seq-viewer");
+    const analysisViewer = document.getElementById("analysis-viewer");
+    const recordViewer = document.getElementById("record-viewer");
+
+    async function sendCmd(commandText) {
+      termOut.textContent += `\ncontractor% ${commandText}\n`;
+      const res = await fetch("/api/command", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: commandText })
+      });
+      const data = await res.json();
+      if (data.terminal) termOut.textContent += data.terminal + "\n";
+      if (data.sequence) seqViewer.textContent = formatFasta(data.sequence);
+      if (data.analysis) analysisViewer.textContent = data.analysis;
+      if (data.record) recordViewer.textContent = `${data.record.title}\n\n${data.record.body}`;
+      termOut.scrollTop = termOut.scrollHeight;
+    }
+
+    function formatFasta(seq) {
+      let out = "";
+      for (let i = 0; i < seq.length; i += 60) {
+        out += String(i).padStart(4, "0") + "  " + seq.slice(i, i + 60) + "\n";
+      }
+      return out;
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && input.value.trim()) {
+        const val = input.value;
+        input.value = "";
+        sendCmd(val);
+      }
+    });
+  </script>
+</body>
+</html>

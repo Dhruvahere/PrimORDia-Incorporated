@@ -1,0 +1,88 @@
+/* static/style.css — 1992 SGI 4Dwm / Motif aesthetic */
+* { box-sizing: border-box; border-radius: 0 !important; }
+body {
+  margin: 0;
+  background: #536678; /* Classic IRIX desktop slate */
+  font-family: "Courier New", Courier, monospace;
+  color: #111;
+  height: 100vh;
+  overflow: hidden;
+}
+.workstation { display: flex; flex-direction: column; height: 100vh; }
+.menubar {
+  background: #b8bfc7;
+  border-top: 2px solid #eef2f6;
+  border-bottom: 2px solid #485058;
+  padding: 4px 10px;
+  font-size: 13px;
+  display: flex;
+  gap: 20px;
+}
+.brand { font-weight: bold; color: #1b2836; }
+.menu-item { cursor: pointer; padding: 0 6px; }
+.menu-item:hover { background: #8fa1b3; }
+
+.desktop {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+}
+.side-panels {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 10px;
+  overflow: hidden;
+}
+.sgi-window {
+  background: #b8bfc7;
+  border-top: 3px solid #e3e8ee;
+  border-left: 3px solid #e3e8ee;
+  border-right: 3px solid #3d444c;
+  border-bottom: 3px solid #3d444c;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.win-titlebar {
+  background: #3a5d7c;
+  color: #e8f0f8;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-bottom: 2px solid #22374a;
+}
+.win-body {
+  flex: 1;
+  margin: 4px;
+  padding: 8px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.35;
+  border-top: 2px solid #2b3036;
+  border-left: 2px solid #2b3036;
+  border-right: 2px solid #dfe5ec;
+  border-bottom: 2px solid #dfe5ec;
+}
+.terminal-interior, .pane-dark {
+  background: #10161d;
+  color: #c7d8e6;
+}
+.pane-light {
+  background: #d7dde4;
+  color: #14191f;
+  white-space: pre-wrap;
+}
+#term-output { white-space: pre-wrap; }
+.prompt-line { display: flex; align-items: center; margin-top: 6px; color: #5bc0de; }
+#cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e6f2ff;
+  font-family: inherit;
+  font-size: 12px;
+}
