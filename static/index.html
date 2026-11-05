@@ -1,4 +1,4 @@
-<!-- static/index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="workstation">
-    <!-- Top Motif Menu Bar -->
+  
     <div class="menubar">
       <span class="brand">PrimORDia Research Workstation</span>
       <span class="menu-item" onclick="sendCmd('inspect zeta')">Workspace</span>
@@ -16,10 +16,8 @@
       <span class="menu-item" onclick="sendCmd('validate')">Analysis</span>
       <span class="menu-item" onclick="sendCmd('help')">Help</span>
     </div>
-
-    <!-- Main Desktop Grid -->
     <div class="desktop">
-      <!-- Left: Contractor Terminal -->
+  
       <div class="sgi-window terminal-win">
         <div class="win-titlebar">Contractor Terminal — ttyq0</div>
         <div class="win-body terminal-interior">
@@ -34,7 +32,7 @@ Type `help` or `read WO-017` to begin.
         </div>
       </div>
 
-      <!-- Right: Supporting Research Windows -->
+     
       <div class="side-panels">
         <div class="sgi-window">
           <div class="win-titlebar">Sequence Viewer [Fragment ZETA]</div>
@@ -47,7 +45,7 @@ Type `help` or `read WO-017` to begin.
         </div>
 
         <div class="sgi-window">
-          <div class="win-titlebar">Company Records</div>
+          <div class="win-titlebar"> Classified Company Records</div>
           <pre id="record-viewer" class="win-body pane-light">Select a file with `read WO-017`, `read VET-017`, `read MEMO-92`, or `read PREV-NOTE`.</pre>
         </div>
       </div>
