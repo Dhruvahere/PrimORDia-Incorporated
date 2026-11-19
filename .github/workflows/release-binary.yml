@@ -1,0 +1,119 @@
+name: Release demo binary
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-x86_64
+            machine: x86_64
+          - os: windows-latest
+            label: windows-x86_64
+            machine: AMD64
+          - os: macos-latest
+            label: macos-arm64
+            machine: arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Confirm architecture
+        run: python -c "import platform,sys; m=platform.machine(); print(m); sys.exit(0 if m=='${{ matrix.machine }}' else 1)"
+
+      - name: Install
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt "pyinstaller==6.22.3"
+
+      - name: Build executable
+        env:
+          PRIMORDIA_BINARY_NAME: PrimORDia-${{ matrix.label }}
+        run: python -m PyInstaller --noconfirm --clean primordia.spec
+
+      - name: Smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          bin=(dist/PrimORDia-${{ matrix.label }}*)
+          test -f "${bin[0]}"
+          echo "Running ${bin[0]}"
+          chmod +x "${bin[0]}" || true
+          PRIMORDIA_NO_BROWSER=1 PRIMORDIA_PORT=8765 "${bin[0]}" > smoke.log 2>&1 &
+          pid=$!
+          ok=0
+          for _ in $(seq 1 90); do
+            if curl -sf http://127.0.0.1:8765/ >/dev/null; then
+              ok=1
+              break
+            fi
+            if ! kill -0 "$pid" 2>/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ok" != 1 ]; then
+            echo "Workstation binary did not start"
+            cat smoke.log || true
+            exit 1
+          fi
+          curl -sf http://127.0.0.1:8765/ | grep -q "PrimORDia Research Workstation"
+          curl -sf -X POST http://127.0.0.1:8765/api/command \
+            -H "Content-Type: application/json" \
+            -d "{\"command\":\"restore fold\"}" | grep -q "Module \`fold\` is now online"
+          curl -sf -X POST http://127.0.0.1:8765/api/command \
+            -H "Content-Type: application/json" \
+            -d "{\"command\":\"fold 0 40\"}" | grep -q "Dot-Bracket"
+          kill "$pid" || true
+          wait "$pid" || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PrimORDia-${{ matrix.label }}
+          path: dist/PrimORDia-${{ matrix.label }}*
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: List binaries
+        run: ls -lh dist
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md << 'EOF'
+          Demo binaries for the PrimORDia 1992 workstation.
+
+          Download the file for your computer and run it. Leave the window open. The workstation opens in your browser.
+
+          - Windows: double-click `PrimORDia-windows-x86_64.exe`. If SmartScreen appears, choose More info, then Run anyway.
+          - Mac (Apple silicon): `chmod +x PrimORDia-macos-arm64 && ./PrimORDia-macos-arm64`. If macOS blocks it, right-click the file, choose Open, then Open.
+          - Linux: `chmod +x PrimORDia-linux-x86_64 && ./PrimORDia-linux-x86_64`
+          EOF
+          gh release create "${GITHUB_REF_NAME}" dist/* \
+            --title "PrimORDia ${GITHUB_REF_NAME}" \
+            --notes-file release-notes.md

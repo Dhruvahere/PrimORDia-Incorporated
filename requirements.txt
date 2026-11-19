@@ -1,0 +1,4 @@
+fastapi==0.165.0
+uvicorn==0.54.0
+biopython==1.88
+viennarna==2.8.0

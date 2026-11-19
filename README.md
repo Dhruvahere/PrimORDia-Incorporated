@@ -4,7 +4,15 @@ PrimORDia GmbH is a short, terminal-driven bioinformatics mystery set in 1992. I
 
 Built with FastAPI, Biopython `PairswiseAlign`), and ViennaRNA `RNA.fold`), presented inside an early-1990s SGI/IRIX-inspired workstation interface.
 
+# Demo
 
+[Download the PrimORDia demo](https://github.com/Dhruvahere/PrimORDia-Incorporated/releases/latest)
+
+Run the file for your computer and leave its window open. The workstation opens in your browser.
+
+- Windows: [PrimORDia-windows-x86_64.exe](https://github.com/Dhruvahere/PrimORDia-Incorporated/releases/latest/download/PrimORDia-windows-x86_64.exe). Double-click it. If SmartScreen appears, choose More info, then Run anyway.
+- Mac (Apple silicon): [PrimORDia-macos-arm64](https://github.com/Dhruvahere/PrimORDia-Incorporated/releases/latest/download/PrimORDia-macos-arm64). In Terminal, `chmod +x PrimORDia-macos-arm64 && ./PrimORDia-macos-arm64`. If macOS blocks the file, right-click it, choose Open, then Open.
+- Linux: [PrimORDia-linux-x86_64](https://github.com/Dhruvahere/PrimORDia-Incorporated/releases/latest/download/PrimORDia-linux-x86_64). `chmod +x PrimORDia-linux-x86_64 && ./PrimORDia-linux-x86_64`
 
 # Quick Start
 

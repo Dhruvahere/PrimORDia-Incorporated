@@ -1,4 +1,8 @@
 # app.py
+import socket
+import sys
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -7,6 +11,16 @@ from Bio.Align import PairwiseAligner
 import RNA
 
 from game_data import ZETA_SEQ, DONORS, ARCHIVES
+
+
+def bundle_root():
+    """Directory that holds static files, including inside a frozen binary."""
+    if getattr(sys, "frozen", False):
+        return Path(getattr(sys, "_MEIPASS"))
+    return Path(__file__).resolve().parent
+
+
+STATIC_DIR = bundle_root() / "static"
 
 app = FastAPI(title="PrimORDia Research Workstation")
 
@@ -229,9 +243,61 @@ def run_command(req: CommandRequest):
     return {"terminal": f"contractor: {cmd}: command not found. Type `help`.", "state": STATE}
 
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
 @app.get("/")
 def index():
-    return FileResponse("static/index.html")
+    return FileResponse(STATIC_DIR / "index.html")
+
+
+def choose_port():
+    import os
+
+    requested = os.environ.get("PRIMORDIA_PORT")
+    if requested:
+        return int(requested)
+    for port in range(8000, 8020):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            try:
+                sock.bind(("127.0.0.1", port))
+            except OSError:
+                continue
+            return port
+    raise SystemExit("No free local port for the PrimORDia workstation.")
+
+
+def main():
+    import os
+    import threading
+    import time
+    import webbrowser
+
+    import uvicorn
+
+    port = choose_port()
+    url = f"http://127.0.0.1:{port}"
+    print(f"PrimORDia workstation: {url}")
+    print("Leave this window open. Close it when you are finished.")
+    config = uvicorn.Config(app, host="127.0.0.1", port=port, log_level="info")
+    server = uvicorn.Server(config)
+
+    def open_browser():
+        if os.environ.get("PRIMORDIA_NO_BROWSER") == "1":
+            return
+        for _ in range(200):
+            if server.started:
+                break
+            time.sleep(0.05)
+        if not webbrowser.open(url):
+            print(f"Open this address in your browser: {url}")
+
+    threading.Thread(target=open_browser, daemon=True).start()
+    server.run()
+
+
+if __name__ == "__main__":
+    import multiprocessing
+
+    multiprocessing.freeze_support()
+    main()
